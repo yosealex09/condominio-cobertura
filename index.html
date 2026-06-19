@@ -3,66 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cobertura Personal — Administración Condominio</title>
+<title>Cobertura Personal — Administración Condominios</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg-primary:#ffffff;
-  --bg-secondary:#f5f5f4;
-  --bg-tertiary:#efede8;
-  --text-primary:#1a1a18;
-  --text-secondary:#5f5e5a;
-  --text-muted:#888780;
-  --border-light:rgba(0,0,0,0.1);
-  --border-mid:rgba(0,0,0,0.18);
-  --radius-md:8px;
-  --radius-lg:12px;
+  --bg-primary:#ffffff;--bg-secondary:#f5f5f4;--bg-tertiary:#efede8;
+  --text-primary:#1a1a18;--text-secondary:#5f5e5a;--text-muted:#888780;
+  --border-light:rgba(0,0,0,0.1);--border-mid:rgba(0,0,0,0.18);
+  --radius-md:8px;--radius-lg:12px;
   --blue-bg:#E6F1FB;--blue-text:#0C447C;--blue-border:#185FA5;
   --green-bg:#EAF3DE;--green-text:#3B6D11;
   --amber-bg:#FAEEDA;--amber-text:#633806;--amber-border:#854F0B;
   --red-bg:#FCEBEB;--red-text:#791F1F;--red-border:#A32D2D;
+  --purple-bg:#EEEDFE;--purple-text:#3C3489;
 }
 @media(prefers-color-scheme:dark){
   :root{
-    --bg-primary:#1e1e1c;
-    --bg-secondary:#2a2a28;
-    --bg-tertiary:#111110;
-    --text-primary:#f0ede8;
-    --text-secondary:#b4b2a9;
-    --text-muted:#888780;
-    --border-light:rgba(255,255,255,0.1);
-    --border-mid:rgba(255,255,255,0.18);
+    --bg-primary:#1e1e1c;--bg-secondary:#2a2a28;--bg-tertiary:#111110;
+    --text-primary:#f0ede8;--text-secondary:#b4b2a9;--text-muted:#888780;
+    --border-light:rgba(255,255,255,0.1);--border-mid:rgba(255,255,255,0.18);
     --blue-bg:#042C53;--blue-text:#B5D4F4;--blue-border:#185FA5;
     --green-bg:#173404;--green-text:#C0DD97;
     --amber-bg:#412402;--amber-text:#FAC775;--amber-border:#854F0B;
     --red-bg:#501313;--red-text:#F7C1C1;--red-border:#A32D2D;
+    --purple-bg:#26215C;--purple-text:#CECBF6;
   }
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg-tertiary);color:var(--text-primary);min-height:100vh}
-.topbar{background:var(--bg-primary);border-bottom:0.5px solid var(--border-light);padding:0 24px;display:flex;align-items:center;gap:12px;height:52px}
-.topbar-title{font-size:15px;font-weight:500;color:var(--text-primary)}
-.topbar-sub{font-size:13px;color:var(--text-muted)}
-.container{max-width:960px;margin:0 auto;padding:24px 16px}
+
+/* TOPBAR */
+.topbar{background:var(--bg-primary);border-bottom:0.5px solid var(--border-light);padding:0 20px;display:flex;align-items:center;gap:10px;height:52px;flex-wrap:wrap}
+.topbar-title{font-size:14px;font-weight:500;white-space:nowrap}
+.topbar-sep{color:var(--text-muted);font-size:12px}
+
+/* CONDOMINIO SELECTOR */
+.condo-bar{background:var(--bg-secondary);border-bottom:0.5px solid var(--border-light);padding:8px 20px;display:flex;align-items:center;gap:10px;overflow-x:auto}
+.condo-btn{padding:5px 12px;font-size:12px;border:0.5px solid var(--border-mid);border-radius:20px;background:var(--bg-primary);color:var(--text-secondary);cursor:pointer;white-space:nowrap;transition:all .15s}
+.condo-btn:hover{background:var(--bg-secondary);color:var(--text-primary)}
+.condo-btn.active{background:var(--blue-border);color:#fff;border-color:var(--blue-border)}
+.condo-btn.add-condo{border-style:dashed;color:var(--text-muted)}
+.condo-label{font-size:12px;color:var(--text-muted);white-space:nowrap;flex-shrink:0}
+
+.container{max-width:980px;margin:0 auto;padding:20px 16px}
+
+/* METRICS */
 .metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
 @media(max-width:600px){.metric-grid{grid-template-columns:repeat(2,1fr)}}
 .metric{background:var(--bg-secondary);border-radius:var(--radius-md);padding:14px 16px}
-.metric-label{font-size:12px;color:var(--text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.metric-label{font-size:11px;color:var(--text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.04em}
 .metric-value{font-size:24px;font-weight:500;color:var(--text-primary)}
-.metric-value.danger{color:#A32D2D}
-.metric-value.warning{color:#854F0B}
-.metric-value.success{color:#3B6D11}
+.metric-value.danger{color:#A32D2D}.metric-value.warning{color:#854F0B}.metric-value.success{color:#3B6D11}
+
+/* TABS */
 .tabs{display:flex;gap:2px;border-bottom:0.5px solid var(--border-light);margin-bottom:20px;overflow-x:auto}
 .tab{padding:9px 16px;font-size:13px;border:none;background:none;cursor:pointer;color:var(--text-secondary);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;display:flex;align-items:center;gap:6px}
 .tab:hover{color:var(--text-primary)}
 .tab.active{color:var(--text-primary);border-bottom:2px solid var(--text-primary);font-weight:500}
-.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
 .section-title{font-size:15px;font-weight:500}
 .btn{border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:7px 14px;font-size:13px;cursor:pointer;background:var(--bg-primary);color:var(--text-primary);display:inline-flex;align-items:center;gap:6px}
 .btn:hover{background:var(--bg-secondary)}
 .btn-primary{background:#185FA5;color:#fff;border-color:#185FA5}
 .btn-primary:hover{background:#0C447C;border-color:#0C447C}
-.alert-card{border-radius:var(--radius-lg);border:0.5px solid;padding:12px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+
+/* ALERTS */
+.alert-card{border-radius:var(--radius-lg);border:0.5px solid;padding:12px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
 .alert-card.danger{background:var(--red-bg);border-color:var(--red-border)}
 .alert-card.warning{background:var(--amber-bg);border-color:var(--amber-border)}
 .alert-card.info{background:var(--blue-bg);border-color:var(--blue-border)}
@@ -72,27 +79,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .alert-card.info .alert-icon,.alert-card.info .alert-title{color:var(--blue-text)}
 .alert-title{font-size:13px;font-weight:500;margin-bottom:3px}
 .alert-desc{font-size:12px;color:var(--text-secondary)}
-.alert-action{margin-left:auto;flex-shrink:0}
+
+/* CALENDAR */
 .cal-nav{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .cal-month-label{font-size:15px;font-weight:500;flex:1}
 .nav-btn{background:none;border:0.5px solid var(--border-mid);border-radius:var(--radius-md);padding:5px 10px;cursor:pointer;color:var(--text-secondary);font-size:18px;line-height:1;display:flex;align-items:center}
 .nav-btn:hover{background:var(--bg-secondary)}
 .cal-header{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px}
 .cal-day-name{text-align:center;font-size:11px;color:var(--text-muted);padding:4px}
+.cal-day-name.finde{color:var(--purple-text)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-day{min-height:72px;border-radius:var(--radius-md);border:0.5px solid var(--border-light);padding:6px;background:var(--bg-primary)}
 .cal-day.empty{background:none;border-color:transparent}
+.cal-day.finde{background:var(--purple-bg);border-color:transparent}
 .cal-day.today{border:1.5px solid var(--blue-border)}
 .cal-day-num{font-size:11px;color:var(--text-muted);margin-bottom:4px}
 .cal-day.today .cal-day-num{color:var(--blue-border);font-weight:600}
+.cal-day.finde .cal-day-num{color:var(--purple-text)}
 .pill{font-size:10px;padding:2px 5px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .pill-licencia{background:var(--red-bg);color:var(--red-text)}
 .pill-permiso{background:var(--blue-bg);color:var(--blue-text)}
 .pill-cubierto{background:var(--green-bg);color:var(--green-text)}
+
+/* TABLE */
 .table-wrap{border:0.5px solid var(--border-light);border-radius:var(--radius-lg);overflow:hidden;overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
-th{background:var(--bg-secondary);padding:10px 14px;text-align:left;font-weight:500;font-size:11px;color:var(--text-secondary);border-bottom:0.5px solid var(--border-light);text-transform:uppercase;letter-spacing:.04em}
-td{padding:10px 14px;border-bottom:0.5px solid var(--border-light);color:var(--text-primary);vertical-align:middle}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:580px}
+th{background:var(--bg-secondary);padding:9px 14px;text-align:left;font-weight:500;font-size:11px;color:var(--text-secondary);border-bottom:0.5px solid var(--border-light);text-transform:uppercase;letter-spacing:.04em}
+td{padding:9px 14px;border-bottom:0.5px solid var(--border-light);color:var(--text-primary);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--bg-secondary)}
 .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:3px;font-weight:500}
@@ -102,37 +115,49 @@ tr:hover td{background:var(--bg-secondary)}
 .badge-pendiente{background:var(--amber-bg);color:var(--amber-text)}
 .icon-btn{background:none;border:0.5px solid var(--border-light);border-radius:6px;padding:4px 8px;cursor:pointer;color:var(--text-secondary);font-size:14px;display:inline-flex;align-items:center}
 .icon-btn:hover{background:var(--bg-secondary);color:var(--red-text)}
+
+/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--bg-primary);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:400px;border:0.5px solid var(--border-light);max-height:90vh;overflow-y:auto}
+.modal{background:var(--bg-primary);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:440px;border:0.5px solid var(--border-light);max-height:90vh;overflow-y:auto}
 .modal-title{font-size:16px;font-weight:500;margin-bottom:20px}
 .form-group{margin-bottom:14px}
 .form-label{font-size:12px;color:var(--text-secondary);margin-bottom:5px;display:block}
-input,select,textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border-mid);border-radius:var(--radius-md);font-size:13px;background:var(--bg-primary);color:var(--text-primary);font-family:inherit}
-input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px;border-color:var(--blue-border)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select{width:100%;padding:8px 10px;border:0.5px solid var(--border-mid);border-radius:var(--radius-md);font-size:13px;background:var(--bg-primary);color:var(--text-primary);font-family:inherit}
+input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
-.avatar{width:32px;height:32px;border-radius:50%;background:var(--blue-bg);color:var(--blue-text);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--blue-bg);color:var(--blue-text);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
 .empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}
-.empty-state i{font-size:40px;margin-bottom:12px;display:block}
+.empty-state i{font-size:36px;margin-bottom:10px;display:block}
+.turno-chip{display:inline-block;font-size:11px;padding:1px 7px;border-radius:3px;background:var(--bg-secondary);color:var(--text-secondary);margin-right:4px;margin-bottom:2px}
+.turno-chip.finde{background:var(--purple-bg);color:var(--purple-text)}
+.section-note{font-size:12px;color:var(--text-muted);margin-bottom:14px}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <i class="ti ti-building" style="font-size:20px;color:var(--blue-border)" aria-hidden="true"></i>
-  <span class="topbar-title">Administración Condominio</span>
-  <span class="topbar-sub">· Gestión de cobertura</span>
+  <span class="topbar-title">Administración Condominios</span>
+  <span class="topbar-sep">·</span>
+  <span style="font-size:13px;color:var(--text-secondary)">Gestión de cobertura</span>
+</div>
+
+<div class="condo-bar">
+  <span class="condo-label"><i class="ti ti-building-community" aria-hidden="true"></i> Condominio:</span>
+  <div id="condo-tabs" style="display:flex;gap:6px;flex-wrap:nowrap"></div>
+  <button class="condo-btn add-condo" onclick="openModalCondo()"><i class="ti ti-plus" aria-hidden="true"></i> Agregar</button>
 </div>
 
 <div class="container">
-
   <div class="metric-grid">
     <div class="metric">
-      <div class="metric-label"><i class="ti ti-users" aria-hidden="true"></i> Personal total</div>
+      <div class="metric-label"><i class="ti ti-users" aria-hidden="true"></i> Personal</div>
       <div class="metric-value" id="m-total">0</div>
     </div>
     <div class="metric">
-      <div class="metric-label"><i class="ti ti-calendar-off" aria-hidden="true"></i> Ausentes este mes</div>
+      <div class="metric-label"><i class="ti ti-calendar-off" aria-hidden="true"></i> Ausentes</div>
       <div class="metric-value warning" id="m-ausentes">0</div>
     </div>
     <div class="metric">
@@ -150,11 +175,10 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
     <button class="tab" onclick="switchTab('calendario')"><i class="ti ti-calendar" aria-hidden="true"></i> Calendario</button>
     <button class="tab" onclick="switchTab('ausencias')"><i class="ti ti-list" aria-hidden="true"></i> Ausencias</button>
     <button class="tab" onclick="switchTab('personal')"><i class="ti ti-users" aria-hidden="true"></i> Personal</button>
+    <button class="tab" onclick="switchTab('condominios')"><i class="ti ti-building-community" aria-hidden="true"></i> Condominios</button>
   </div>
 
-  <div id="tab-alertas">
-    <div id="alertas-container"></div>
-  </div>
+  <div id="tab-alertas"><div id="alertas-container"></div></div>
 
   <div id="tab-calendario" style="display:none">
     <div class="cal-nav">
@@ -162,24 +186,28 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
       <span class="cal-month-label" id="cal-month-label"></span>
       <button class="nav-btn" onclick="changeMonth(1)" aria-label="Mes siguiente"><i class="ti ti-chevron-right"></i></button>
     </div>
+    <div style="display:flex;gap:16px;font-size:12px;color:var(--text-muted);margin-bottom:12px;flex-wrap:wrap">
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--red-bg);border-radius:2px;margin-right:4px"></span>Licencia sin cubrir</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--blue-bg);border-radius:2px;margin-right:4px"></span>Permiso sin cubrir</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--green-bg);border-radius:2px;margin-right:4px"></span>Cubierto</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--purple-bg);border-radius:2px;margin-right:4px"></span>Fin de semana</span>
+    </div>
     <div class="cal-header">
       <div class="cal-day-name">Lun</div><div class="cal-day-name">Mar</div><div class="cal-day-name">Mié</div>
-      <div class="cal-day-name">Jue</div><div class="cal-day-name">Vie</div><div class="cal-day-name">Sáb</div>
-      <div class="cal-day-name">Dom</div>
+      <div class="cal-day-name">Jue</div><div class="cal-day-name">Vie</div>
+      <div class="cal-day-name finde">Sáb</div><div class="cal-day-name finde">Dom</div>
     </div>
     <div class="cal-grid" id="cal-grid"></div>
   </div>
 
   <div id="tab-ausencias" style="display:none">
     <div class="section-header">
-      <span class="section-title">Registro de ausencias</span>
+      <span class="section-title">Ausencias — <span id="aus-condo-label"></span></span>
       <button class="btn btn-primary" onclick="openModal()"><i class="ti ti-plus" aria-hidden="true"></i> Nueva ausencia</button>
     </div>
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr><th>Empleado</th><th>Cargo</th><th>Tipo</th><th>Desde</th><th>Hasta</th><th>Cobertura</th><th></th></tr>
-        </thead>
+        <thead><tr><th>Empleado</th><th>Cargo</th><th>Tipo</th><th>Desde</th><th>Hasta</th><th>Cobertura</th><th></th></tr></thead>
         <tbody id="ausencias-tbody"></tbody>
       </table>
     </div>
@@ -187,21 +215,34 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
 
   <div id="tab-personal" style="display:none">
     <div class="section-header">
-      <span class="section-title">Personal del condominio</span>
+      <span class="section-title">Personal — <span id="per-condo-label"></span></span>
       <button class="btn btn-primary" onclick="openModalPersonal()"><i class="ti ti-plus" aria-hidden="true"></i> Agregar empleado</button>
     </div>
+    <p class="section-note"><i class="ti ti-info-circle" aria-hidden="true"></i> Cada empleado tiene turno de semana y turno de fin de semana (pueden ser distintos o vacío si no trabaja ese día).</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Nombre</th><th>Cargo</th><th>Turno</th><th>Teléfono</th><th></th></tr></thead>
+        <thead><tr><th>Nombre</th><th>Cargo</th><th>Turno semana</th><th>Turno fin de semana</th><th>Teléfono</th><th></th></tr></thead>
         <tbody id="personal-tbody"></tbody>
       </table>
     </div>
   </div>
 
+  <div id="tab-condominios" style="display:none">
+    <div class="section-header">
+      <span class="section-title">Todos los condominios</span>
+      <button class="btn btn-primary" onclick="openModalCondo()"><i class="ti ti-plus" aria-hidden="true"></i> Agregar condominio</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Nombre</th><th>Dirección</th><th>Personal</th><th>Ausencias activas</th><th></th></tr></thead>
+        <tbody id="condos-tbody"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- Modal ausencia -->
-<div class="modal-overlay" id="modal-ausencia" role="dialog" aria-modal="true" aria-label="Nueva ausencia">
+<div class="modal-overlay" id="modal-ausencia" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-title">Registrar ausencia</div>
     <div class="form-group">
@@ -215,27 +256,29 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
         <option value="licencia">Licencia médica</option>
       </select>
     </div>
-    <div class="form-group">
-      <label class="form-label">Fecha inicio</label>
-      <input type="date" id="f-inicio">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Fecha término</label>
-      <input type="date" id="f-fin">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Fecha inicio</label>
+        <input type="date" id="f-inicio">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha término</label>
+        <input type="date" id="f-fin">
+      </div>
     </div>
     <div class="form-group">
       <label class="form-label">Reemplazante externo (opcional)</label>
       <input type="text" id="f-reemplazante" placeholder="Nombre o dejar en blanco">
     </div>
     <div class="modal-actions">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn" onclick="closeModal('modal-ausencia')">Cancelar</button>
       <button class="btn btn-primary" onclick="guardarAusencia()">Guardar</button>
     </div>
   </div>
 </div>
 
 <!-- Modal personal -->
-<div class="modal-overlay" id="modal-personal" role="dialog" aria-modal="true" aria-label="Agregar empleado">
+<div class="modal-overlay" id="modal-personal" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-title">Agregar empleado</div>
     <div class="form-group">
@@ -250,92 +293,124 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
         <option>Guardia</option>
       </select>
     </div>
-    <div class="form-group">
-      <label class="form-label">Turno</label>
-      <select id="p-turno">
-        <option>Mañana</option>
-        <option>Tarde</option>
-        <option>Noche</option>
-        <option>Completo</option>
-      </select>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Turno semana</label>
+        <select id="p-turno">
+          <option value="">— No trabaja —</option>
+          <option>Mañana</option>
+          <option>Tarde</option>
+          <option>Noche</option>
+          <option>12 horas</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Turno fin de semana</label>
+        <select id="p-turno-fds">
+          <option value="">— No trabaja —</option>
+          <option>Mañana</option>
+          <option>Tarde</option>
+          <option>Noche</option>
+          <option>12 horas</option>
+        </select>
+      </div>
     </div>
     <div class="form-group">
       <label class="form-label">Teléfono</label>
       <input type="text" id="p-tel" placeholder="+56 9 XXXX XXXX">
     </div>
     <div class="modal-actions">
-      <button class="btn" onclick="closeModalPersonal()">Cancelar</button>
+      <button class="btn" onclick="closeModal('modal-personal')">Cancelar</button>
       <button class="btn btn-primary" onclick="guardarPersonal()">Guardar</button>
     </div>
   </div>
 </div>
 
-<script>
-const STORAGE_KEY = 'condominio_data';
-const hoy = new Date();
-let calYear = hoy.getFullYear();
-let calMonth = hoy.getMonth();
+<!-- Modal condominio -->
+<div class="modal-overlay" id="modal-condo" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-title">Agregar condominio</div>
+    <div class="form-group">
+      <label class="form-label">Nombre del condominio</label>
+      <input type="text" id="c-nombre" placeholder="Ej: Edificio Las Torres">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Dirección</label>
+      <input type="text" id="c-dir" placeholder="Ej: Av. Principal 1234, Santiago">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('modal-condo')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarCondo()">Guardar</button>
+    </div>
+  </div>
+</div>
 
+<script>
+const STORAGE_KEY = 'condominio_v2';
+const hoy = new Date();
+let calYear = hoy.getFullYear(), calMonth = hoy.getMonth();
+let condominios = [], personal = [], ausencias = [];
+let activoCondoId = null, nextCondoId = 1, nextPerId = 1, nextAusId = 1;
+
+/* ── DEFAULTS ── */
+function defaultData() {
+  condominios = [
+    {id:1, nombre:'Edificio Las Torres', dir:'Av. Providencia 1234'},
+    {id:2, nombre:'Condominio El Parque', dir:'Calle Los Robles 567'},
+    {id:3, nombre:'Residencial Los Pinos', dir:'Pasaje Central 89'},
+  ];
+  personal = [
+    {id:1,condoId:1,nombre:'María González',cargo:'Conserje',turno:'Mañana',turnoFds:'Mañana',tel:'+56 9 8765 4321'},
+    {id:2,condoId:1,nombre:'Pedro Soto',cargo:'Personal de aseo',turno:'12 horas',turnoFds:'',tel:'+56 9 7654 3210'},
+    {id:3,condoId:1,nombre:'Carmen Rojas',cargo:'Conserje',turno:'Tarde',turnoFds:'Tarde',tel:'+56 9 6543 2109'},
+    {id:4,condoId:2,nombre:'Luis Fuentes',cargo:'Conserje',turno:'Mañana',turnoFds:'12 horas',tel:'+56 9 5432 1098'},
+    {id:5,condoId:2,nombre:'Ana Muñoz',cargo:'Personal de aseo',turno:'12 horas',turnoFds:'',tel:'+56 9 4321 0987'},
+    {id:6,condoId:3,nombre:'Jorge Araya',cargo:'Guardia',turno:'Noche',turnoFds:'Noche',tel:'+56 9 3210 9876'},
+    {id:7,condoId:3,nombre:'Rosa Vega',cargo:'Personal de aseo',turno:'Mañana',turnoFds:'',tel:'+56 9 2109 8765'},
+  ];
+  const y=hoy.getFullYear(),m=hoy.getMonth(),d=hoy.getDate();
+  ausencias = [
+    {id:1,empleadoId:1,tipo:'licencia',inicio:new Date(y,m,d-1),fin:new Date(y,m,d+4),reemplazante:''},
+    {id:2,empleadoId:3,tipo:'permiso',inicio:new Date(y,m,d+1),fin:new Date(y,m,d+2),reemplazante:'Silvia Torres'},
+    {id:3,empleadoId:4,tipo:'licencia',inicio:new Date(y,m,d),fin:new Date(y,m,d+6),reemplazante:''},
+  ];
+  nextCondoId=4; nextPerId=8; nextAusId=4;
+  activoCondoId=1;
+}
+
+/* ── STORAGE ── */
 function loadData() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
+    if(raw) {
       const d = JSON.parse(raw);
-      personal = d.personal || defaultPersonal();
-      ausencias = (d.ausencias || []).map(a => ({
-        ...a,
-        inicio: new Date(a.inicio),
-        fin: new Date(a.fin)
-      }));
-      nextAusId = ausencias.length ? Math.max(...ausencias.map(a => a.id)) + 1 : 1;
+      condominios = d.condominios||[];
+      personal = d.personal||[];
+      ausencias = (d.ausencias||[]).map(a=>({...a,inicio:new Date(a.inicio),fin:new Date(a.fin)}));
+      nextCondoId = d.nextCondoId||1;
+      nextPerId = d.nextPerId||1;
+      nextAusId = d.nextAusId||1;
+      activoCondoId = d.activoCondoId||(condominios[0]||{}).id||null;
       return;
     }
-  } catch(e) {}
-  personal = defaultPersonal();
-  ausencias = defaultAusencias();
+  } catch(e){}
+  defaultData();
 }
-
 function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ personal, ausencias }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({condominios,personal,ausencias,nextCondoId,nextPerId,nextAusId,activoCondoId}));
 }
 
-function defaultPersonal() {
-  return [
-    {id:1,nombre:'María González',cargo:'Conserje',turno:'Mañana',tel:'+56 9 8765 4321'},
-    {id:2,nombre:'Pedro Soto',cargo:'Personal de aseo',turno:'Completo',tel:'+56 9 7654 3210'},
-    {id:3,nombre:'Carmen Rojas',cargo:'Conserje',turno:'Tarde',tel:'+56 9 6543 2109'},
-    {id:4,nombre:'Luis Fuentes',cargo:'Personal de aseo',turno:'Mañana',tel:'+56 9 5432 1098'},
-    {id:5,nombre:'Ana Muñoz',cargo:'Conserje',turno:'Noche',tel:'+56 9 4321 0987'},
-    {id:6,nombre:'Jorge Araya',cargo:'Guardia',turno:'Completo',tel:'+56 9 3210 9876'},
-    {id:7,nombre:'Rosa Vega',cargo:'Personal de aseo',turno:'Tarde',tel:'+56 9 2109 8765'},
-    {id:8,nombre:'Carlos Mora',cargo:'Guardia',turno:'Noche',tel:'+56 9 1098 7654'}
-  ];
-}
-
-function defaultAusencias() {
-  const y = hoy.getFullYear(), m = hoy.getMonth(), d = hoy.getDate();
-  return [
-    {id:1,empleadoId:1,tipo:'licencia',inicio:new Date(y,m,d-2),fin:new Date(y,m,d+5),reemplazante:''},
-    {id:2,empleadoId:3,tipo:'permiso',inicio:new Date(y,m,d+1),fin:new Date(y,m,d+2),reemplazante:'Silvia Torres'},
-    {id:3,empleadoId:4,tipo:'licencia',inicio:new Date(y,m,d),fin:new Date(y,m,d+8),reemplazante:''},
-  ];
-}
-
-let personal = [], ausencias = [], nextAusId = 1;
-
-function fmtDate(d) {
-  return d.toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'numeric'});
-}
-function sameDay(a,b) {
-  return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
-}
-function getEmpById(id) { return personal.find(p=>p.id===id); }
-function initials(nombre) {
-  return nombre.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
-}
-
-function getAusenciasDia(date) {
-  return ausencias.filter(a=>{
+/* ── HELPERS ── */
+function fmtDate(d){return d.toLocaleDateString('es-CL',{day:'2-digit',month:'2-digit',year:'numeric'});}
+function sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
+function getEmpById(id){return personal.find(p=>p.id===id);}
+function getCondoById(id){return condominios.find(c=>c.id===id);}
+function initials(n){return n.split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase();}
+function isFinde(date){const d=date.getDay();return d===0||d===6;}
+function personalActivo(){return personal.filter(p=>p.condoId===activoCondoId);}
+function ausenciasActivas(){return ausencias.filter(a=>{const emp=getEmpById(a.empleadoId);return emp&&emp.condoId===activoCondoId;});}
+function getAusenciasDia(date){
+  return ausenciasActivas().filter(a=>{
     const ini=new Date(a.inicio);ini.setHours(0,0,0,0);
     const fin=new Date(a.fin);fin.setHours(23,59,59,999);
     const d=new Date(date);d.setHours(12,0,0,0);
@@ -343,44 +418,67 @@ function getAusenciasDia(date) {
   });
 }
 
+/* ── CONDO BAR ── */
+function renderCondoBar() {
+  const ct = document.getElementById('condo-tabs');
+  ct.innerHTML = condominios.map(c=>`
+    <button class="condo-btn${c.id===activoCondoId?' active':''}" onclick="selectCondo(${c.id})">${c.nombre}</button>
+  `).join('');
+}
+function selectCondo(id) {
+  activoCondoId = id;
+  saveData();
+  renderCondoBar();
+  updateAll();
+}
+
+/* ── METRICS ── */
+function updateMetrics() {
+  const aus = ausenciasActivas();
+  document.getElementById('m-total').textContent = personalActivo().length;
+  document.getElementById('m-ausentes').textContent = aus.length;
+  document.getElementById('m-sin-cubrir').textContent = aus.filter(a=>!a.reemplazante).length;
+  document.getElementById('m-cubiertos').textContent = aus.filter(a=>a.reemplazante).length;
+  const condo = getCondoById(activoCondoId);
+  const label = condo ? condo.nombre : '';
+  ['aus-condo-label','per-condo-label'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=label;});
+}
+
+/* ── TABS ── */
 function switchTab(name) {
-  ['alertas','calendario','ausencias','personal'].forEach((t,i)=>{
+  ['alertas','calendario','ausencias','personal','condominios'].forEach((t,i)=>{
     document.getElementById('tab-'+t).style.display=t===name?'block':'none';
     document.querySelectorAll('.tab')[i].classList.toggle('active',t===name);
   });
   if(name==='calendario')renderCalendar();
   if(name==='ausencias')renderAusencias();
   if(name==='personal')renderPersonal();
+  if(name==='condominios')renderCondominios();
 }
 
-function updateMetrics() {
-  const sinCubrir = ausencias.filter(a=>!a.reemplazante).length;
-  const cubiertos = ausencias.filter(a=>a.reemplazante).length;
-  document.getElementById('m-total').textContent = personal.length;
-  document.getElementById('m-ausentes').textContent = ausencias.length;
-  document.getElementById('m-sin-cubrir').textContent = sinCubrir;
-  document.getElementById('m-cubiertos').textContent = cubiertos;
-}
-
+/* ── ALERTAS ── */
 function renderAlertas() {
   const c = document.getElementById('alertas-container');
   let html = '';
-  ausencias.forEach(a=>{
-    const emp = getEmpById(a.empleadoId);
-    if(!emp) return;
+  const hoyMid = new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate());
+
+  ausenciasActivas().forEach(a=>{
+    const emp = getEmpById(a.empleadoId); if(!emp) return;
     const ini = new Date(a.inicio); ini.setHours(0,0,0,0);
     const finA = new Date(a.fin); finA.setHours(23,59,59,999);
-    const hoyMid = new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate());
-    const diff = (ini - hoyMid) / (1000*60*60*24);
+    const diff = (ini - hoyMid)/(1000*60*60*24);
+    const esFds = isFinde(ini);
+    const turnoLabel = esFds ? (emp.turnoFds||'Sin turno FDS') : (emp.turno||'Sin turno');
+
     if(!a.reemplazante) {
       if(diff<=0 && finA>=hoy) {
         html+=`<div class="alert-card danger">
           <i class="ti ti-alert-circle alert-icon" aria-hidden="true"></i>
           <div style="flex:1">
             <div class="alert-title">Turno activo sin cubrir — ${emp.nombre}</div>
-            <div class="alert-desc">${emp.cargo} · Turno ${emp.turno} · ${a.tipo==='licencia'?'Licencia médica':'Permiso'} hasta ${fmtDate(a.fin)}</div>
+            <div class="alert-desc">${emp.cargo} · ${turnoLabel}${esFds?' <strong>(fin de semana)</strong>':''} · ${a.tipo==='licencia'?'Licencia médica':'Permiso'} hasta ${fmtDate(a.fin)}</div>
           </div>
-          <button class="btn btn-primary alert-action" style="font-size:12px;padding:5px 12px" onclick="cubrirRapido(${a.id})">
+          <button class="btn btn-primary" style="font-size:12px;padding:5px 12px;margin-left:auto;flex-shrink:0" onclick="cubrirRapido(${a.id})">
             <i class="ti ti-user-plus" aria-hidden="true"></i> Asignar externo
           </button>
         </div>`;
@@ -389,22 +487,14 @@ function renderAlertas() {
           <i class="ti ti-bell alert-icon" aria-hidden="true"></i>
           <div style="flex:1">
             <div class="alert-title">Mañana sin cobertura — ${emp.nombre}</div>
-            <div class="alert-desc">${emp.cargo} · Turno ${emp.turno} · Inicia ${fmtDate(ini)}</div>
+            <div class="alert-desc">${emp.cargo} · ${turnoLabel}${esFds?' <strong>(fin de semana)</strong>':''} · Inicia ${fmtDate(ini)}</div>
           </div>
-          <button class="btn btn-primary alert-action" style="font-size:12px;padding:5px 12px" onclick="cubrirRapido(${a.id})">
+          <button class="btn btn-primary" style="font-size:12px;padding:5px 12px;margin-left:auto;flex-shrink:0" onclick="cubrirRapido(${a.id})">
             <i class="ti ti-user-plus" aria-hidden="true"></i> Asignar externo
           </button>
         </div>`;
       }
-    }
-  });
-  ausencias.forEach(a=>{
-    const emp = getEmpById(a.empleadoId);
-    if(!emp||!a.reemplazante) return;
-    const finA = new Date(a.fin); finA.setHours(23,59,59,999);
-    const ini = new Date(a.inicio); ini.setHours(0,0,0,0);
-    const hoyMid = new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate());
-    if(ini<=hoyMid&&finA>=hoy) {
+    } else if(ini<=hoyMid && finA>=hoy) {
       html+=`<div class="alert-card info">
         <i class="ti ti-circle-check alert-icon" aria-hidden="true"></i>
         <div>
@@ -414,9 +504,10 @@ function renderAlertas() {
       </div>`;
     }
   });
+
   if(!html) html=`<div class="alert-card info">
     <i class="ti ti-circle-check alert-icon" aria-hidden="true"></i>
-    <div><div class="alert-title">Todo en orden</div><div class="alert-desc">No hay ausencias urgentes sin cobertura en este momento.</div></div>
+    <div><div class="alert-title">Todo en orden</div><div class="alert-desc">No hay ausencias urgentes sin cobertura en este condominio.</div></div>
   </div>`;
   c.innerHTML = html;
 }
@@ -425,12 +516,12 @@ function cubrirRapido(id) {
   const nombre = prompt('Nombre del externo que cubrirá el turno:');
   if(nombre&&nombre.trim()) {
     const a = ausencias.find(x=>x.id===id);
-    if(a){ a.reemplazante=nombre.trim(); saveData(); }
-    renderAlertas(); updateMetrics();
-    if(document.getElementById('tab-ausencias').style.display!=='none') renderAusencias();
+    if(a){a.reemplazante=nombre.trim();saveData();}
+    updateAll();
   }
 }
 
+/* ── CALENDAR ── */
 function renderCalendar() {
   const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   document.getElementById('cal-month-label').textContent=meses[calMonth]+' '+calYear;
@@ -442,8 +533,9 @@ function renderCalendar() {
   for(let i=0;i<startDow;i++){const e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
   for(let d=1;d<=daysInMonth;d++){
     const date=new Date(calYear,calMonth,d);
+    const fds=isFinde(date);
     const div=document.createElement('div');
-    div.className='cal-day'+(sameDay(date,hoy)?' today':'');
+    div.className='cal-day'+(sameDay(date,hoy)?' today':'')+(fds?' finde':'');
     const aus=getAusenciasDia(date);
     let h=`<div class="cal-day-num">${d}</div>`;
     aus.forEach(a=>{
@@ -455,117 +547,146 @@ function renderCalendar() {
     grid.appendChild(div);
   }
 }
+function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}else if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
 
-function changeMonth(dir){
-  calMonth+=dir;
-  if(calMonth>11){calMonth=0;calYear++;}
-  else if(calMonth<0){calMonth=11;calYear--;}
-  renderCalendar();
-}
-
-function renderAusencias(){
+/* ── AUSENCIAS ── */
+function renderAusencias() {
   const tb=document.getElementById('ausencias-tbody');
-  if(!ausencias.length){
-    tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><i class="ti ti-calendar-off"></i>Sin ausencias registradas</div></td></tr>';
-    return;
-  }
-  tb.innerHTML=ausencias.map(a=>{
-    const emp=getEmpById(a.empleadoId);
-    if(!emp) return '';
-    const tipoCls=a.tipo==='licencia'?'badge-licencia':'badge-permiso';
-    const tipoLabel=a.tipo==='licencia'?'Licencia médica':'Permiso';
-    const cubCls=a.reemplazante?'badge-cubierto':'badge-pendiente';
-    const cubLabel=a.reemplazante?a.reemplazante:'Sin cubrir';
+  const aus=ausenciasActivas();
+  if(!aus.length){tb.innerHTML='<tr><td colspan="7"><div class="empty-state"><i class="ti ti-calendar-off"></i>Sin ausencias registradas</div></td></tr>';return;}
+  tb.innerHTML=aus.map(a=>{
+    const emp=getEmpById(a.empleadoId);if(!emp)return'';
+    const esFds=isFinde(a.inicio);
     return `<tr>
       <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${initials(emp.nombre)}</div>${emp.nombre}</div></td>
       <td>${emp.cargo}</td>
-      <td><span class="badge ${tipoCls}">${tipoLabel}</span></td>
+      <td><span class="badge badge-${a.tipo}">${a.tipo==='licencia'?'Licencia médica':'Permiso'}</span>${esFds?'<span class="turno-chip finde" style="margin-left:4px">FDS</span>':''}</td>
       <td>${fmtDate(a.inicio)}</td>
       <td>${fmtDate(a.fin)}</td>
-      <td><span class="badge ${cubCls}">${cubLabel}</span></td>
-      <td><button class="icon-btn" onclick="eliminarAusencia(${a.id})" aria-label="Eliminar ausencia"><i class="ti ti-trash"></i></button></td>
+      <td><span class="badge ${a.reemplazante?'badge-cubierto':'badge-pendiente'}">${a.reemplazante||'Sin cubrir'}</span></td>
+      <td><button class="icon-btn" onclick="eliminarAusencia(${a.id})" aria-label="Eliminar"><i class="ti ti-trash"></i></button></td>
     </tr>`;
   }).join('');
 }
-
 function eliminarAusencia(id){
-  if(confirm('¿Eliminar este registro de ausencia?')){
-    ausencias=ausencias.filter(a=>a.id!==id);
-    saveData(); renderAusencias(); renderAlertas(); updateMetrics();
-  }
+  if(confirm('¿Eliminar este registro?')){ausencias=ausencias.filter(a=>a.id!==id);saveData();updateAll();}
 }
 
-function renderPersonal(){
+/* ── PERSONAL ── */
+function renderPersonal() {
   const tb=document.getElementById('personal-tbody');
-  if(!personal.length){
-    tb.innerHTML='<tr><td colspan="5"><div class="empty-state"><i class="ti ti-users"></i>Sin empleados registrados</div></td></tr>';
-    return;
-  }
-  tb.innerHTML=personal.map(p=>`<tr>
+  const per=personalActivo();
+  if(!per.length){tb.innerHTML='<tr><td colspan="6"><div class="empty-state"><i class="ti ti-users"></i>Sin empleados registrados en este condominio</div></td></tr>';return;}
+  tb.innerHTML=per.map(p=>`<tr>
     <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar">${initials(p.nombre)}</div>${p.nombre}</div></td>
     <td>${p.cargo}</td>
-    <td>${p.turno}</td>
+    <td><span class="turno-chip">${p.turno||'—'}</span></td>
+    <td><span class="turno-chip finde">${p.turnoFds||'No trabaja'}</span></td>
     <td>${p.tel}</td>
-    <td><button class="icon-btn" onclick="eliminarPersonal(${p.id})" aria-label="Eliminar empleado"><i class="ti ti-trash"></i></button></td>
+    <td><button class="icon-btn" onclick="eliminarPersonal(${p.id})" aria-label="Eliminar"><i class="ti ti-trash"></i></button></td>
   </tr>`).join('');
 }
-
 function eliminarPersonal(id){
-  if(confirm('¿Eliminar este empleado? También se eliminarán sus ausencias.')){
+  if(confirm('¿Eliminar empleado y sus ausencias?')){
     personal=personal.filter(p=>p.id!==id);
     ausencias=ausencias.filter(a=>a.empleadoId!==id);
-    saveData(); renderPersonal(); renderAlertas(); updateMetrics();
+    saveData();updateAll();
   }
 }
 
+/* ── CONDOMINIOS ── */
+function renderCondominios() {
+  const tb=document.getElementById('condos-tbody');
+  tb.innerHTML=condominios.map(c=>{
+    const per=personal.filter(p=>p.condoId===c.id).length;
+    const aus=ausencias.filter(a=>{const emp=getEmpById(a.empleadoId);return emp&&emp.condoId===c.id;}).length;
+    return `<tr>
+      <td><strong>${c.nombre}</strong></td>
+      <td style="color:var(--text-secondary)">${c.dir}</td>
+      <td>${per} personas</td>
+      <td>${aus>0?`<span class="badge badge-pendiente">${aus} ausencia${aus>1?'s':''}</span>`:'<span class="badge badge-cubierto">Sin ausencias</span>'}</td>
+      <td>
+        <button class="btn" style="font-size:12px;padding:4px 10px" onclick="selectCondo(${c.id});switchTab('alertas')">Ver</button>
+        <button class="icon-btn" style="margin-left:4px" onclick="eliminarCondo(${c.id})" aria-label="Eliminar"><i class="ti ti-trash"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function eliminarCondo(id){
+  const c=getCondoById(id);
+  if(!c)return;
+  if(confirm(`¿Eliminar "${c.nombre}" y todo su personal?`)){
+    condominios=condominios.filter(x=>x.id!==id);
+    const perIds=personal.filter(p=>p.condoId===id).map(p=>p.id);
+    personal=personal.filter(p=>p.condoId!==id);
+    ausencias=ausencias.filter(a=>!perIds.includes(a.empleadoId));
+    if(activoCondoId===id)activoCondoId=(condominios[0]||{}).id||null;
+    saveData();renderCondoBar();updateAll();renderCondominios();
+  }
+}
+
+/* ── MODALS ── */
 function openModal(){
-  document.getElementById('f-empleado').innerHTML=personal.map(p=>`<option value="${p.id}">${p.nombre} (${p.cargo})</option>`).join('');
-  const hoyStr=hoy.toISOString().split('T')[0];
-  document.getElementById('f-inicio').value=hoyStr;
-  document.getElementById('f-fin').value=hoyStr;
+  const per=personalActivo();
+  document.getElementById('f-empleado').innerHTML=per.map(p=>`<option value="${p.id}">${p.nombre} (${p.cargo})</option>`).join('');
+  const s=hoy.toISOString().split('T')[0];
+  document.getElementById('f-inicio').value=s;
+  document.getElementById('f-fin').value=s;
   document.getElementById('f-reemplazante').value='';
   document.getElementById('modal-ausencia').classList.add('open');
 }
-function closeModal(){document.getElementById('modal-ausencia').classList.remove('open');}
-
 function guardarAusencia(){
   const empId=parseInt(document.getElementById('f-empleado').value);
   const tipo=document.getElementById('f-tipo').value;
-  const inicioStr=document.getElementById('f-inicio').value;
-  const finStr=document.getElementById('f-fin').value;
-  if(!inicioStr||!finStr){alert('Ingresa las fechas.');return;}
-  const ini=new Date(inicioStr+'T12:00:00');
-  const fin=new Date(finStr+'T12:00:00');
+  const ini=new Date(document.getElementById('f-inicio').value+'T12:00:00');
+  const fin=new Date(document.getElementById('f-fin').value+'T12:00:00');
   if(fin<ini){alert('La fecha de término debe ser igual o posterior al inicio.');return;}
-  const reemplazante=document.getElementById('f-reemplazante').value.trim();
-  ausencias.push({id:nextAusId++,empleadoId:empId,tipo,inicio:ini,fin,reemplazante});
-  saveData(); closeModal(); renderAlertas(); updateMetrics();
-  if(document.getElementById('tab-ausencias').style.display!=='none') renderAusencias();
-  if(document.getElementById('tab-calendario').style.display!=='none') renderCalendar();
+  ausencias.push({id:nextAusId++,empleadoId:empId,tipo,inicio:ini,fin,reemplazante:document.getElementById('f-reemplazante').value.trim()});
+  saveData();closeModal('modal-ausencia');updateAll();
 }
 
 function openModalPersonal(){
   ['p-nombre','p-tel'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('modal-personal').classList.add('open');
 }
-function closeModalPersonal(){document.getElementById('modal-personal').classList.remove('open');}
-
 function guardarPersonal(){
   const nombre=document.getElementById('p-nombre').value.trim();
-  if(!nombre){alert('Ingresa el nombre del empleado.');return;}
-  const nextId=personal.length?Math.max(...personal.map(p=>p.id))+1:1;
-  personal.push({id:nextId,nombre,cargo:document.getElementById('p-cargo').value,turno:document.getElementById('p-turno').value,tel:document.getElementById('p-tel').value.trim()});
-  saveData(); closeModalPersonal(); updateMetrics();
-  if(document.getElementById('tab-personal').style.display!=='none') renderPersonal();
+  if(!nombre){alert('Ingresa el nombre.');return;}
+  personal.push({id:nextPerId++,condoId:activoCondoId,nombre,cargo:document.getElementById('p-cargo').value,turno:document.getElementById('p-turno').value,turnoFds:document.getElementById('p-turno-fds').value,tel:document.getElementById('p-tel').value.trim()});
+  saveData();closeModal('modal-personal');updateAll();
 }
 
+function openModalCondo(){
+  ['c-nombre','c-dir'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('modal-condo').classList.add('open');
+}
+function guardarCondo(){
+  const nombre=document.getElementById('c-nombre').value.trim();
+  if(!nombre){alert('Ingresa el nombre del condominio.');return;}
+  const newId=nextCondoId++;
+  condominios.push({id:newId,nombre,dir:document.getElementById('c-dir').value.trim()});
+  if(!activoCondoId)activoCondoId=newId;
+  saveData();closeModal('modal-condo');renderCondoBar();
+  if(document.getElementById('tab-condominios').style.display!=='none')renderCondominios();
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
 document.querySelectorAll('.modal-overlay').forEach(el=>{
-  el.addEventListener('click',e=>{if(e.target===el){el.classList.remove('open');}});
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
 });
 
+function updateAll(){
+  updateMetrics();renderAlertas();
+  if(document.getElementById('tab-ausencias').style.display!=='none')renderAusencias();
+  if(document.getElementById('tab-personal').style.display!=='none')renderPersonal();
+  if(document.getElementById('tab-calendario').style.display!=='none')renderCalendar();
+  if(document.getElementById('tab-condominios').style.display!=='none')renderCondominios();
+}
+
 loadData();
-updateMetrics();
-renderAlertas();
+renderCondoBar();
+updateAll();
 </script>
 </body>
 </html>
