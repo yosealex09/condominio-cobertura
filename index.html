@@ -133,6 +133,20 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
 .turno-chip{display:inline-block;font-size:11px;padding:1px 7px;border-radius:3px;background:var(--bg-secondary);color:var(--text-secondary);margin-right:4px;margin-bottom:2px}
 .turno-chip.finde{background:var(--purple-bg);color:var(--purple-text)}
 .section-note{font-size:12px;color:var(--text-muted);margin-bottom:14px}
+
+.instr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:600px){.instr-grid{grid-template-columns:1fr}}
+.instr-card{background:var(--bg-secondary);border-radius:var(--radius-lg);padding:18px 20px;border:0.5px solid var(--border-light)}
+.instr-card-header{font-size:14px;font-weight:500;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--text-primary)}
+.instr-card-header i{color:var(--blue-border);font-size:18px}
+.instr-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.instr-list li{font-size:13px;color:var(--text-secondary);padding-left:14px;position:relative;line-height:1.5}
+.instr-list li::before{content:'·';position:absolute;left:0;color:var(--text-muted);font-weight:700}
+.instr-badge{display:inline-block;font-size:11px;padding:1px 8px;border-radius:3px;font-weight:500;margin-right:4px}
+.instr-badge.danger{background:var(--red-bg);color:var(--red-text)}
+.instr-badge.warning{background:var(--amber-bg);color:var(--amber-text)}
+.instr-badge.info{background:var(--blue-bg);color:var(--blue-text)}
+.instr-dot{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:3px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -176,6 +190,7 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
     <button class="tab" onclick="switchTab('ausencias')"><i class="ti ti-list" aria-hidden="true"></i> Ausencias</button>
     <button class="tab" onclick="switchTab('personal')"><i class="ti ti-users" aria-hidden="true"></i> Personal</button>
     <button class="tab" onclick="switchTab('condominios')"><i class="ti ti-building-community" aria-hidden="true"></i> Condominios</button>
+    <button class="tab" onclick="switchTab('instrucciones')"><i class="ti ti-help-circle" aria-hidden="true"></i> Instrucciones</button>
   </div>
 
   <div id="tab-alertas"><div id="alertas-container"></div></div>
@@ -237,6 +252,73 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
         <thead><tr><th>Nombre</th><th>Dirección</th><th>Personal</th><th>Ausencias activas</th><th></th></tr></thead>
         <tbody id="condos-tbody"></tbody>
       </table>
+    </div>
+  </div>
+
+  <div id="tab-instrucciones" style="display:none">
+    <div class="instr-grid">
+
+      <div class="instr-card">
+        <div class="instr-card-header"><i class="ti ti-building-community"></i> Condominios</div>
+        <ul class="instr-list">
+          <li>Ve a la pestaña <strong>Condominios</strong> y haz clic en <strong>Agregar condominio</strong> para registrar cada edificio con su nombre y dirección.</li>
+          <li>Usa los botones de la <strong>barra superior</strong> para cambiar entre condominios. Todas las vistas se filtran al seleccionado.</li>
+          <li>Desde la tabla puedes hacer clic en <strong>Ver</strong> para ir directo a las alertas de ese condominio, o eliminarlo si ya no está activo.</li>
+        </ul>
+      </div>
+
+      <div class="instr-card">
+        <div class="instr-card-header"><i class="ti ti-users"></i> Personal</div>
+        <ul class="instr-list">
+          <li>Selecciona el condominio activo y ve a la pestaña <strong>Personal</strong>.</li>
+          <li>Haz clic en <strong>Agregar empleado</strong> e ingresa nombre, cargo, turno de semana y turno de fin de semana.</li>
+          <li>Turnos disponibles: <strong>Mañana, Tarde, Noche y 12 horas</strong>, para semana y fin de semana por separado. Si no trabaja ese tipo de día, deja <em>No trabaja</em>.</li>
+          <li>El ícono <i class="ti ti-trash"></i> elimina al empleado y todas sus ausencias asociadas.</li>
+        </ul>
+      </div>
+
+      <div class="instr-card">
+        <div class="instr-card-header"><i class="ti ti-calendar-off"></i> Ausencias</div>
+        <ul class="instr-list">
+          <li>Ve a la pestaña <strong>Ausencias</strong> y haz clic en <strong>Nueva ausencia</strong>.</li>
+          <li>Selecciona el empleado, el tipo (<strong>Permiso</strong> o <strong>Licencia médica</strong>) y las fechas de inicio y término.</li>
+          <li>Si ya tienes reemplazante, ingresa su nombre en <em>Reemplazante externo</em>. Si no, déjalo en blanco y el sistema generará una alerta.</li>
+          <li>Las ausencias que caen en fin de semana se marcan automáticamente con la etiqueta <strong>FDS</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="instr-card">
+        <div class="instr-card-header"><i class="ti ti-bell"></i> Alertas</div>
+        <ul class="instr-list">
+          <li><span class="instr-badge danger">Rojo</span> Turno activo hoy sin reemplazante. Requiere acción inmediata.</li>
+          <li><span class="instr-badge warning">Amarillo</span> Mañana hay un turno sin cobertura. Aviso preventivo.</li>
+          <li><span class="instr-badge info">Azul</span> Turno ya cubierto con reemplazante asignado.</li>
+          <li>Usa el botón <strong>Asignar externo</strong> en cada alerta para registrar el reemplazante desde ahí mismo.</li>
+        </ul>
+      </div>
+
+      <div class="instr-card">
+        <div class="instr-card-header"><i class="ti ti-calendar"></i> Calendario</div>
+        <ul class="instr-list">
+          <li>Muestra el mes con todas las ausencias del condominio activo marcadas por color.</li>
+          <li><span class="instr-dot" style="background:var(--red-bg)"></span> Licencia sin cubrir &nbsp;
+              <span class="instr-dot" style="background:var(--blue-bg)"></span> Permiso sin cubrir &nbsp;
+              <span class="instr-dot" style="background:var(--green-bg)"></span> Cubierto &nbsp;
+              <span class="instr-dot" style="background:var(--purple-bg)"></span> Fin de semana</li>
+          <li>Usa las flechas <strong>‹ ›</strong> para navegar entre meses.</li>
+        </ul>
+      </div>
+
+      <div class="instr-card">
+        <div class="instr-card-header"><i class="ti ti-device-floppy"></i> Almacenamiento</div>
+        <ul class="instr-list">
+          <li>Los datos se guardan automáticamente en el <strong>navegador</strong> (localStorage). No requiere base de datos ni cuenta.</li>
+          <li>Persisten al cerrar y volver a abrir la página en el mismo navegador y dispositivo.</li>
+          <li><strong>Importante:</strong> limpiar el caché del navegador borrará los datos. Usa siempre el mismo navegador y dispositivo.</li>
+          <li>Los datos son independientes por navegador: lo que ingreses en Chrome no se verá en Safari ni en otro equipo.</li>
+        </ul>
+      </div>
+
     </div>
   </div>
 </div>
@@ -446,7 +528,7 @@ function updateMetrics() {
 
 /* ── TABS ── */
 function switchTab(name) {
-  ['alertas','calendario','ausencias','personal','condominios'].forEach((t,i)=>{
+  ['alertas','calendario','ausencias','personal','condominios','instrucciones'].forEach((t,i)=>{
     document.getElementById('tab-'+t).style.display=t===name?'block':'none';
     document.querySelectorAll('.tab')[i].classList.toggle('active',t===name);
   });
