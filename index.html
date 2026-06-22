@@ -310,12 +310,13 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
       </div>
 
       <div class="instr-card">
-        <div class="instr-card-header"><i class="ti ti-device-floppy"></i> Almacenamiento</div>
+        <div class="instr-card-header"><i class="ti ti-brand-google"></i> Almacenamiento</div>
         <ul class="instr-list">
-          <li>Los datos se guardan automáticamente en el <strong>navegador</strong> (localStorage). No requiere base de datos ni cuenta.</li>
-          <li>Persisten al cerrar y volver a abrir la página en el mismo navegador y dispositivo.</li>
-          <li><strong>Importante:</strong> limpiar el caché del navegador borrará los datos. Usa siempre el mismo navegador y dispositivo.</li>
-          <li>Los datos son independientes por navegador: lo que ingreses en Chrome no se verá en Safari ni en otro equipo.</li>
+          <li>Los datos se guardan automáticamente en <strong>Google Sheets</strong> cada vez que realizas un cambio.</li>
+          <li>Al abrir la app, los datos se cargan desde Sheets. Una barra azul indica cuando está cargando o guardando.</li>
+          <li>Una notificación verde confirma <em>✓ Guardado en Google Sheets</em> tras cada cambio exitoso.</li>
+          <li>Si no hay conexión a internet, la app carga datos de ejemplo temporales pero no podrá guardar hasta recuperar la conexión.</li>
+          <li>Los datos son accesibles desde cualquier navegador o dispositivo, siempre que tengas conexión.</li>
         </ul>
       </div>
 
@@ -428,11 +429,48 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
 </div>
 
 <script>
-const STORAGE_KEY = 'condominio_v2';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyo8AVDzeL1t4O5ZI-joLO7nNxWyOETzfxSoNdYB5zESJZRkpfHeVOVyivS8fHpzH5LiA/exec';
 const hoy = new Date();
 let calYear = hoy.getFullYear(), calMonth = hoy.getMonth();
 let condominios = [], personal = [], ausencias = [];
 let activoCondoId = null, nextCondoId = 1, nextPerId = 1, nextAusId = 1;
+let _saveTimer = null;
+
+/* ── LOADING UI ── */
+function showLoader(msg) {
+  let el = document.getElementById('gs-loader');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'gs-loader';
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#185FA5;color:#fff;font-size:13px;padding:8px 20px;z-index:999;display:flex;align-items:center;gap:10px';
+    el.innerHTML = '<i class="ti ti-loader" style="animation:spin 1s linear infinite"></i><span id="gs-loader-msg"></span>';
+    document.body.prepend(el);
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+    document.head.appendChild(style);
+  }
+  document.getElementById('gs-loader-msg').textContent = msg;
+  el.style.display = 'flex';
+}
+function hideLoader() {
+  const el = document.getElementById('gs-loader');
+  if (el) el.style.display = 'none';
+}
+function showToast(msg, type='success') {
+  let el = document.getElementById('gs-toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'gs-toast';
+    el.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:10px 18px;border-radius:8px;font-size:13px;z-index:999;transition:opacity .3s';
+    document.body.appendChild(el);
+  }
+  el.style.background = type==='success' ? '#3B6D11' : '#A32D2D';
+  el.style.color = '#fff';
+  el.textContent = msg;
+  el.style.opacity = '1';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.style.opacity = '0', 2500);
+}
 
 /* ── DEFAULTS ── */
 function defaultData() {
@@ -460,26 +498,73 @@ function defaultData() {
   activoCondoId=1;
 }
 
-/* ── STORAGE ── */
-function loadData() {
+/* ── STORAGE (Google Sheets) ── */
+async function loadData() {
+  showLoader('Cargando datos desde Google Sheets…');
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) {
-      const d = JSON.parse(raw);
-      condominios = d.condominios||[];
-      personal = d.personal||[];
-      ausencias = (d.ausencias||[]).map(a=>({...a,inicio:new Date(a.inicio),fin:new Date(a.fin)}));
-      nextCondoId = d.nextCondoId||1;
-      nextPerId = d.nextPerId||1;
-      nextAusId = d.nextAusId||1;
-      activoCondoId = d.activoCondoId||(condominios[0]||{}).id||null;
+    const url = SCRIPT_URL + '?action=load&t=' + Date.now();
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json.ok && json.data) {
+      const d = json.data;
+      condominios = d.condominios || [];
+      personal = d.personal || [];
+      ausencias = (d.ausencias || []).map(a => ({
+        ...a,
+        id: Number(a.id),
+        empleadoId: Number(a.empleadoId),
+        inicio: new Date(a.inicio),
+        fin: new Date(a.fin)
+      }));
+      personal = personal.map(p => ({...p, id: Number(p.id), condoId: Number(p.condoId)}));
+      condominios = condominios.map(c => ({...c, id: Number(c.id)}));
+      nextCondoId = condominios.length ? Math.max(...condominios.map(c=>c.id))+1 : 1;
+      nextPerId = personal.length ? Math.max(...personal.map(p=>p.id))+1 : 1;
+      nextAusId = ausencias.length ? Math.max(...ausencias.map(a=>a.id))+1 : 1;
+      activoCondoId = condominios.length ? condominios[0].id : null;
+      hideLoader();
       return;
     }
-  } catch(e){}
+  } catch(e) {
+    console.error('Error cargando desde Sheets:', e);
+  }
+  hideLoader();
+  // Si falla, cargar datos de ejemplo
   defaultData();
+  showToast('No se pudo conectar a Google Sheets. Cargando datos de ejemplo.', 'error');
 }
+
 function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({condominios,personal,ausencias,nextCondoId,nextPerId,nextAusId,activoCondoId}));
+  // Debounce: espera 800ms antes de guardar para no saturar con llamadas
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(_doSave, 800);
+}
+
+async function _doSave() {
+  showLoader('Guardando en Google Sheets…');
+  try {
+    const payload = JSON.stringify({
+      condominios,
+      personal,
+      ausencias: ausencias.map(a => ({
+        ...a,
+        inicio: a.inicio.toISOString(),
+        fin: a.fin.toISOString()
+      }))
+    });
+    const url = SCRIPT_URL + '?action=save&payload=' + encodeURIComponent(payload);
+    const res = await fetch(url);
+    const json = await res.json();
+    if (json.ok) {
+      showToast('✓ Guardado en Google Sheets');
+    } else {
+      showToast('Error al guardar', 'error');
+    }
+  } catch(e) {
+    console.error('Error guardando en Sheets:', e);
+    showToast('Error de conexión al guardar', 'error');
+  }
+  hideLoader();
 }
 
 /* ── HELPERS ── */
@@ -766,9 +851,10 @@ function updateAll(){
   if(document.getElementById('tab-condominios').style.display!=='none')renderCondominios();
 }
 
-loadData();
-renderCondoBar();
-updateAll();
+loadData().then(() => {
+  renderCondoBar();
+  updateAll();
+});
 </script>
 </body>
 </html>
