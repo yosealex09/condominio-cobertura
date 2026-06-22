@@ -429,7 +429,7 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyo8AVDzeL1t4O5ZI-joLO7nNxWyOETzfxSoNdYB5zESJZRkpfHeVOVyivS8fHpzH5LiA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzagbQzrkgrkgkbnPwkdiNzJ1jVn6KMq-ihtka-Ei8qz2hJdpOtuPxYw4PpRiMptZd4ag/exec';
 const hoy = new Date();
 let calYear = hoy.getFullYear(), calMonth = hoy.getMonth();
 let condominios = [], personal = [], ausencias = [];
@@ -499,16 +499,37 @@ function defaultData() {
 }
 
 /* ── STORAGE (Google Sheets) ── */
+function jsonp(url) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const script = document.createElement('script');
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error('Timeout'));
+    }, 15000);
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+    window[cbName] = function(data) {
+      cleanup();
+      resolve(data);
+    };
+    script.src = url + '&callback=' + cbName;
+    script.onerror = () => { cleanup(); reject(new Error('Script error')); };
+    document.head.appendChild(script);
+  });
+}
+
 async function loadData() {
   showLoader('Cargando datos desde Google Sheets…');
   try {
-    const url = SCRIPT_URL + '?action=load&t=' + Date.now();
-    const res = await fetch(url);
-    const json = await res.json();
+    const json = await jsonp(SCRIPT_URL + '?action=load&t=' + Date.now());
     if (json.ok && json.data) {
       const d = json.data;
-      condominios = d.condominios || [];
-      personal = d.personal || [];
+      condominios = (d.condominios || []).map(c => ({...c, id: Number(c.id)}));
+      personal = (d.personal || []).map(p => ({...p, id: Number(p.id), condoId: Number(p.condoId)}));
       ausencias = (d.ausencias || []).map(a => ({
         ...a,
         id: Number(a.id),
@@ -516,8 +537,6 @@ async function loadData() {
         inicio: new Date(a.inicio),
         fin: new Date(a.fin)
       }));
-      personal = personal.map(p => ({...p, id: Number(p.id), condoId: Number(p.condoId)}));
-      condominios = condominios.map(c => ({...c, id: Number(c.id)}));
       nextCondoId = condominios.length ? Math.max(...condominios.map(c=>c.id))+1 : 1;
       nextPerId = personal.length ? Math.max(...personal.map(p=>p.id))+1 : 1;
       nextAusId = ausencias.length ? Math.max(...ausencias.map(a=>a.id))+1 : 1;
@@ -529,13 +548,11 @@ async function loadData() {
     console.error('Error cargando desde Sheets:', e);
   }
   hideLoader();
-  // Si falla, cargar datos de ejemplo
   defaultData();
-  showToast('No se pudo conectar a Google Sheets. Cargando datos de ejemplo.', 'error');
+  showToast('No se pudo conectar a Google Sheets. Usando datos de ejemplo.', 'error');
 }
 
 function saveData() {
-  // Debounce: espera 800ms antes de guardar para no saturar con llamadas
   clearTimeout(_saveTimer);
   _saveTimer = setTimeout(_doSave, 800);
 }
@@ -543,7 +560,7 @@ function saveData() {
 async function _doSave() {
   showLoader('Guardando en Google Sheets…');
   try {
-    const payload = JSON.stringify({
+    const payload = encodeURIComponent(JSON.stringify({
       condominios,
       personal,
       ausencias: ausencias.map(a => ({
@@ -551,14 +568,12 @@ async function _doSave() {
         inicio: a.inicio.toISOString(),
         fin: a.fin.toISOString()
       }))
-    });
-    const url = SCRIPT_URL + '?action=save&payload=' + encodeURIComponent(payload);
-    const res = await fetch(url);
-    const json = await res.json();
+    }));
+    const json = await jsonp(SCRIPT_URL + '?action=save&t=' + Date.now() + '&payload=' + payload);
     if (json.ok) {
       showToast('✓ Guardado en Google Sheets');
     } else {
-      showToast('Error al guardar', 'error');
+      showToast('Error al guardar: ' + (json.error||''), 'error');
     }
   } catch(e) {
     console.error('Error guardando en Sheets:', e);
