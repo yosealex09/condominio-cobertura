@@ -327,7 +327,7 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
 <!-- Modal ausencia -->
 <div class="modal-overlay" id="modal-ausencia" role="dialog" aria-modal="true">
   <div class="modal">
-    <div class="modal-title">Registrar ausencia</div>
+    <div class="modal-title" id="modal-ausencia-title">Registrar ausencia</div>
     <div class="form-group">
       <label class="form-label">Empleado</label>
       <select id="f-empleado"></select>
@@ -354,6 +354,7 @@ input:focus,select:focus{outline:2px solid var(--blue-border);outline-offset:1px
       <input type="text" id="f-reemplazante" placeholder="Nombre o dejar en blanco">
     </div>
     <div class="modal-actions">
+      <input type="hidden" id="f-ausencia-id" value="">
       <button class="btn" onclick="closeModal('modal-ausencia')">Cancelar</button>
       <button class="btn btn-primary" onclick="guardarAusencia()">Guardar</button>
     </div>
@@ -746,7 +747,10 @@ function renderAusencias() {
       <td>${fmtDate(a.inicio)}</td>
       <td>${fmtDate(a.fin)}</td>
       <td><span class="badge ${a.reemplazante?'badge-cubierto':'badge-pendiente'}">${a.reemplazante||'Sin cubrir'}</span></td>
-      <td><button class="icon-btn" onclick="eliminarAusencia(${a.id})" aria-label="Eliminar"><i class="ti ti-trash"></i></button></td>
+      <td style="display:flex;gap:4px">
+        <button class="icon-btn" onclick="editarAusencia(${a.id})" aria-label="Editar" title="Editar"><i class="ti ti-pencil"></i></button>
+        <button class="icon-btn" onclick="eliminarAusencia(${a.id})" aria-label="Eliminar" title="Eliminar"><i class="ti ti-trash"></i></button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -811,10 +815,31 @@ function eliminarCondo(id){
 function openModal(){
   const per=personalActivo();
   document.getElementById('f-empleado').innerHTML=per.map(p=>`<option value="${p.id}">${p.nombre} (${p.cargo})</option>`).join('');
+  document.getElementById('f-empleado').disabled=false;
+  document.getElementById('f-tipo').disabled=false;
   const s=hoy.toISOString().split('T')[0];
   document.getElementById('f-inicio').value=s;
   document.getElementById('f-fin').value=s;
   document.getElementById('f-reemplazante').value='';
+  document.getElementById('f-ausencia-id').value='';
+  document.getElementById('modal-ausencia-title').textContent='Registrar ausencia';
+  document.getElementById('modal-ausencia').classList.add('open');
+}
+function editarAusencia(id){
+  const a=ausencias.find(x=>x.id===id);
+  if(!a)return;
+  const emp=getEmpById(a.empleadoId);
+  const per=personalActivo();
+  document.getElementById('f-empleado').innerHTML=per.map(p=>`<option value="${p.id}">${p.nombre} (${p.cargo})</option>`).join('');
+  document.getElementById('f-empleado').value=a.empleadoId;
+  document.getElementById('f-empleado').disabled=true;
+  document.getElementById('f-tipo').value=a.tipo;
+  document.getElementById('f-tipo').disabled=true;
+  document.getElementById('f-inicio').value=a.inicio.toISOString().split('T')[0];
+  document.getElementById('f-fin').value=a.fin.toISOString().split('T')[0];
+  document.getElementById('f-reemplazante').value=a.reemplazante||'';
+  document.getElementById('f-ausencia-id').value=id;
+  document.getElementById('modal-ausencia-title').textContent='Editar ausencia — '+(emp?emp.nombre:'');
   document.getElementById('modal-ausencia').classList.add('open');
 }
 function guardarAusencia(){
@@ -823,7 +848,20 @@ function guardarAusencia(){
   const ini=new Date(document.getElementById('f-inicio').value+'T12:00:00');
   const fin=new Date(document.getElementById('f-fin').value+'T12:00:00');
   if(fin<ini){alert('La fecha de término debe ser igual o posterior al inicio.');return;}
-  ausencias.push({id:nextAusId++,empleadoId:empId,tipo,inicio:ini,fin,reemplazante:document.getElementById('f-reemplazante').value.trim()});
+  const reemplazante=document.getElementById('f-reemplazante').value.trim();
+  const editId=document.getElementById('f-ausencia-id').value;
+  if(editId){
+    // Modo edición: actualiza la ausencia existente
+    const idx=ausencias.findIndex(a=>a.id===parseInt(editId));
+    if(idx!==-1){
+      ausencias[idx].inicio=ini;
+      ausencias[idx].fin=fin;
+      ausencias[idx].reemplazante=reemplazante;
+    }
+  } else {
+    // Modo nuevo
+    ausencias.push({id:nextAusId++,empleadoId:empId,tipo,inicio:ini,fin,reemplazante});
+  }
   saveData();closeModal('modal-ausencia');updateAll();
 }
 
